@@ -1,0 +1,176 @@
+<html>
+<body id = 'mybody'>
+
+
+
+<style></style>
+<div id='simplearea'>
+<textarea id='init_codes' wrap='logical' style='display:none' >
+//your default config
+var range_begin_default = 1, range_end_default = 10, replace_pattern_default = '%%d' ;
+
+// We suggest that you write your codes in your local development environment for saving your work in time.
+
+
+
+
+
+//add your string result like this, having a good name !
+var your_first_result = tpl_func(
+	function (i){
+       return "a"; 
+   }
+); 
+//your_first_result='a\r\na\n.......a'
+
+//add your result in the array (the array will be joined with '\r\n' and displayed on your right)
+var result_array = [
+	//your_first_result, your_second_result
+	
+];
+
+</textarea>
+
+<textarea id='your_codes' wrap='logical' style='width:45%;height:800px' onclick='check_ontent();'>
+// introduction
+//tpl_fs:render function or string
+//range_end: render range end, default = range_end_default = 10
+//separator: render separator, default = ', '
+//range_begin: render range begin, default = range_end_default = 1
+//replace_pattern: the pattern will be replaced by render parameter, default = replace_pattern_default = '%%d' and you can use others if it makes conflict
+//render_function: default it is simply implemented by replaceAll the pattern by index
+
+function tpl_func(tpl_fs, range_end, separator, range_begin, replace_pattern, render_function){
+    if(typeof(separator) == 'undefined'){separator = ', ';}
+    if(typeof(range_begin) == 'undefined'){range_begin = range_begin_default;}
+    if(typeof(range_end) == 'undefined'){range_end = range_end_default;}
+    if(typeof(replace_pattern) == 'undefined'){replace_pattern = replace_pattern_default;}
+	if(typeof(render_function) == 'undefined'){render_function = function(src, pattern, index){
+		return src.replaceAll(pattern, index);
+	};}
+    var result = '';
+    for(var i = range_begin; i<=range_end; ++i){
+		var tmp = tpl_fs;
+		if (typeof(tpl_fs) != 'string'){
+			tmp = tpl_fs(i);
+		}
+        if(i == range_end ){
+            result += render_function(tmp, replace_pattern, i);
+        }
+        else{
+            result += render_function(tmp, replace_pattern, i);
+            result += separator;
+        }
+    }
+    return result;
+}
+window.tpl_func = tpl_func;
+
+//your default config
+var range_begin_default = 1, range_end_default = 10, replace_pattern_default = '%%d' ;
+
+//your first render result, take a look
+var struct_define_function_property = tpl_func(
+    function (i){
+        return [
+        'template< ' + tpl_func('typename T%%d', i) + '>', 		//tpl_func will render 'typename T1, typename T2,... typename Ti'  
+        'struct function_property<void (*) (' + tpl_func('t%%d', i) + ')>{',
+        '    ' + tpl_func('typedef T%%d t%%d;', i, '\r\n    '),	// we use '\r\n    ' as separator for indent
+        '    ' + 'static const int arguments_count = %%d;',     //'%%d' will be finally replaced by i
+        '    ' + 'static const int stackword_cost  = args_list<'+ tpl_func('t%%d', i) +'>::stackword_cost;',
+        '};'].join('\r\n');
+    }, //render function
+	3, //render range end: default 10 
+	'\r\n',//range result separator: default ', '
+	0 //render range before: default 1
+);
+
+//nested render
+//How to construct parameters forwarding in c++98 standard? using the following example!
+function cpp98_forward_copy_constructor(subclass, parent_class) {
+	return tpl_func( function (i){
+			var result = [];
+			var count = Math.floor(Math.log2(i));
+			result.push('template< ' + tpl_func('typename T%%d', count) + '>');
+			result.push('inline ' + subclass + '(' + 
+				tpl_func('const T%%d& a%%d', count, ', ', 1, '%%d', function(src, pattern, index){
+					var result = src.replaceAll(pattern, index);
+					if( ((1 << (index - 1)) & i) == 0){
+						result = result.replace('const ', '');
+					}
+					return result;
+				}) 
+				+ ') : ' + parent_class + '(' + tpl_func('a%%d', count)	+ ') {}');
+			return result.join("\r\n");
+		}, 1<<(range_end_default + 1) - 1, "\r\n");
+}
+
+//add your result in the array (the array will be joined with '\r\n' and displayed on your right)
+var result_array = [
+	struct_define_function_property, cpp98_forward_copy_constructor("sub_class", "parent_class")
+];
+window.result_array = result_array;
+</textarea>
+
+<textarea  id='your_result' wrap='logical' style='width:45%;height:800px'>
+</textarea>
+</div>
+<input id='run_your_codes' type='button' value='Run' onclick='get_result()'>
+<input id='show_example_b' type='button' value='Show Examples Again' onclick='show_example()'>
+<script>
+
+var first_write = true;
+var example_codes = false;
+function check_ontent(){
+	if(first_write){
+		example_codes = document.getElementById('your_codes').value ;
+		document.getElementById('your_codes').value = document.getElementById('init_codes').value;
+		document.getElementById('your_result').value = '';
+		first_write = false;
+	}
+}
+
+function show_example(){
+	if(example_codes){
+		document.getElementById('your_codes').value = example_codes;
+	}
+}
+
+function get_result(){
+	document.getElementById('your_result').value = '';
+	try{
+		//eval(document.getElementById('your_codes').value);
+		//var p = document.getElementById('last_runcodes');
+		//if(p){
+		//	document.removeChild(p);
+		//}
+		var newScript = document.createElement('script');
+		newScript.type = 'text/javascript';
+		newScript.id = 'last_runcodes';
+		newScript.innerHTML = document.getElementById('your_codes').value;
+		document.getElementById('mybody').appendChild(newScript);
+
+		var result  = result_array.join('\r\n') || 'Did you  forgot to add your render result variable to the result_array?' ;
+		document.getElementById('your_result').value = result;
+		document.getElementById('your_result').select();
+		try{
+			document.execCommand('copy');
+		}
+		catch(e){
+		}
+	}
+	catch(e){
+		alert('some error happened. press F12 to debug in console. The error information:' + e.name + ': ' + e.message);
+	}
+}
+
+String.prototype.replaceAll  = function(s1,s2){     
+    return this.replace(new RegExp(s1,'gm'),s2);     
+};
+document.getElementById('run_your_codes').click();
+
+</script>
+
+
+</body>
+</html>
