@@ -115,6 +115,7 @@ window.result_array = result_array;
 
 var first_write = true;
 var example_codes = false;
+var your_codes = false;
 function check_ontent(){
 	if(first_write){
 		example_codes = document.getElementById('your_codes').value ;
@@ -126,7 +127,14 @@ function check_ontent(){
 
 function show_example(){
 	if(example_codes){
+	    your_codes =  document.getElementById('your_codes').value;
 	    document.getElementById('your_codes').value = example_codes;
+	    example_codes = false;
+	}
+	else{
+	    example_codes =  document.getElementById('your_codes').value;
+	    document.getElementById('your_codes').value = your_codes;
+	    your_codes = false;
 	}
 }
 
