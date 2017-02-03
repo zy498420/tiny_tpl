@@ -1,8 +1,5 @@
 <html>
 <body id = 'mybody'>
-
-
-
 <style></style>
 <div id='simplearea'>
 <textarea id='init_codes' wrap='logical' style='display:none' >
@@ -10,10 +7,6 @@
 var range_begin_default = 1, range_end_default = 10, replace_pattern_default = '%%d' ;
 
 // We suggest that you write your codes in your local development environment for saving your work in time.
-
-
-
-
 
 //add your string result like this, having a good name !
 var your_first_result = tpl_func(
@@ -102,7 +95,7 @@ function cpp98_forward_copy_constructor(subclass, parent_class) {
 				}) 
 				+ ') : ' + parent_class + '(' + tpl_func('a%%d', count)	+ ') {}');
 			return result.join("\r\n");
-		}, 1<<(range_end_default + 1) - 1, "\r\n");
+		}, (1<<(range_end_default +1))-1, "\r\n");
 }
 
 //add your result in the array (the array will be joined with '\r\n' and displayed on your right)
