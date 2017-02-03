@@ -59,13 +59,14 @@ function tpl_func(tpl_fs, range_end, separator, range_begin, replace_pattern, re
 }
 window.tpl_func = tpl_func;
 
-//your default config
-var range_begin_default = 1, range_end_default = 5, replace_pattern_default = '%%d' ;
+//our default config
+var range_begin_default = 1, range_end_default = 10, replace_pattern_default = '%%d' ;
 
-//your first render result, take a look
+//our first render result, take a glance
 var struct_define_function_property = tpl_func(
     function (i){
         return [
+	'//here is the comment', 					// yes we support adding comment in the result				  
         'template< ' + tpl_func('typename T%%d', i) + '>', 		//tpl_func will render 'typename T1, typename T2,... typename Ti'  
         'struct function_property<void (*) (' + tpl_func('t%%d', i) + ')>{',
         '    ' + tpl_func('typedef T%%d t%%d;', i, '\r\n    '),	// we use '\r\n    ' as separator for indent
@@ -73,12 +74,12 @@ var struct_define_function_property = tpl_func(
         '    ' + 'static const int stackword_cost  = args_list<'+ tpl_func('t%%d', i) +'>::stackword_cost;',
         '};'].join('\r\n');
     }, //render function
-	3, //render range end: default range_end_default = 5
-	'\r\n',//range result separator: default ', '
+	10, //render range end: default range_end_default = 5
+	'\r\n\r\n',//range result separator: default ', '
 	0 //render range before: default range_begin_default = 1
 );
 
-//nested render
+//nested rendering
 //How to construct parameters forwarding in c++98 standard? using the following example!
 function cpp98_forward_copy_constructor(subclass, parent_class) {
 	return tpl_func( function (i){
@@ -95,7 +96,7 @@ function cpp98_forward_copy_constructor(subclass, parent_class) {
 				}) 
 				+ ') : ' + parent_class + '(' + tpl_func('a%%d', count)	+ ') {}');
 			return result.join("\r\n");
-		}, (1<<(range_end_default +1))-1, "\r\n");
+		}, (1<<(5 +1))-1, "\r\n"); 
 }
 
 //add your result in the array (the array will be joined with '\r\n' and displayed on your right)
