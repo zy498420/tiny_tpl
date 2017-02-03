@@ -126,7 +126,7 @@ function check_ontent(){
 
 function show_example(){
 	if(example_codes){
-		document.getElementById('your_codes').value = example_codes;
+	    document.getElementById('your_codes').value = example_codes;
 	}
 }
 
@@ -136,7 +136,7 @@ function get_result(){
 		//eval(document.getElementById('your_codes').value);
 		var p = document.getElementById('last_runcodes');
 		if(p){
-			document.removeChild(p);
+		     document.getElementById('mybody').removeChild(p);
 		}
 		var newScript = document.createElement('script');
 		newScript.type = 'text/javascript';
@@ -148,7 +148,7 @@ function get_result(){
 		document.getElementById('your_result').value = result;
 		document.getElementById('your_result').select();
 		try{
-			document.execCommand('copy');
+		   document.execCommand('copy');
 		}
 		catch(e){
 		}
