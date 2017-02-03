@@ -60,7 +60,7 @@ function tpl_func(tpl_fs, range_end, separator, range_begin, replace_pattern, re
 window.tpl_func = tpl_func;
 
 //your default config
-var range_begin_default = 1, range_end_default = 10, replace_pattern_default = '%%d' ;
+var range_begin_default = 1, range_end_default = 5, replace_pattern_default = '%%d' ;
 
 //your first render result, take a look
 var struct_define_function_property = tpl_func(
@@ -73,9 +73,9 @@ var struct_define_function_property = tpl_func(
         '    ' + 'static const int stackword_cost  = args_list<'+ tpl_func('t%%d', i) +'>::stackword_cost;',
         '};'].join('\r\n');
     }, //render function
-	3, //render range end: default 10 
+	3, //render range end: default range_end_default = 5
 	'\r\n',//range result separator: default ', '
-	0 //render range before: default 1
+	0 //render range before: default range_begin_default = 1
 );
 
 //nested render
@@ -133,10 +133,10 @@ function get_result(){
 	document.getElementById('your_result').value = '';
 	try{
 		//eval(document.getElementById('your_codes').value);
-		//var p = document.getElementById('last_runcodes');
-		//if(p){
-		//	document.removeChild(p);
-		//}
+		var p = document.getElementById('last_runcodes');
+		if(p){
+			document.removeChild(p);
+		}
 		var newScript = document.createElement('script');
 		newScript.type = 'text/javascript';
 		newScript.id = 'last_runcodes';
