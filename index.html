@@ -10,14 +10,26 @@
   .CodeMirror { float: left;}
 </style>
 
-
 </head>
-<body id = 'mybody'>
+<body id ='mybody'>
 
 <div id='simplearea'>
 
 <textarea id='ss' wrap='logical'  style='display:none' ></textarea>
 <textarea id='init_codes' wrap='logical' style='display:none' >
+
+//Introduction
+//function tpl_func :render function result or string , using integer in range as parameter.
+//Can not understand? Don't worry, look at the demo below.
+
+//tpl_fs: either function or string. If it is a function, render will use its result(via each parameter) for further rendering with each parameter; if it is a string, render will use it for  further rendering with each parameter.
+//range_end: render range end, default = range_end_default = 10
+//separator: render separator, default = ', '
+//range_begin: render range begin, default = range_end_default = 1
+//replace_pattern: the pattern will be replaced by render parameter, default = replace_pattern_default = '%%d' and you can use others if it makes conflict
+//render_function: default it is simply implemented by replaceAll the pattern by index
+
+function tpl_func(tpl_fs, range_end, separator, range_begin, replace_pattern, render_function){ if(typeof(separator) == 'undefined'){separator = ', ';} if(typeof(range_begin) == 'undefined'){range_begin = range_begin_default;} if(typeof(range_end) == 'undefined'){range_end = range_end_default;} if(typeof(replace_pattern) == 'undefined'){replace_pattern = replace_pattern_default;} if(typeof(render_function) == 'undefined'){render_function = function(src, pattern, index){ return src.replaceAll(pattern, index); };} var result = ''; for(var i = range_begin; i <= range_end; ++i){ var tmp = tpl_fs; if (typeof(tpl_fs) != 'string'){ tmp = tpl_fs(i); } if(i == range_end ){ result += render_function(tmp, replace_pattern, i); } else{ result += render_function(tmp, replace_pattern, i); result += separator; } } return result; } window.tpl_func = tpl_func;
 
 //your default config
 var range_begin_default = 1, range_end_default = 10, replace_pattern_default = '%%d';
@@ -33,7 +45,6 @@ var your_first_result = tpl_func(
 //add your result in the array (the array will be joined with '\r\n' and displayed on your right)
 window.result_array  = [
 	//your_first_result, your_second_result
-	
 ];
 window.result_seperator = '\r\n\r\n';
 </textarea>
